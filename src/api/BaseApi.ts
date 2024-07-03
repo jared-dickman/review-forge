@@ -9,7 +9,6 @@ export const BaseApi = {
 export const serverRouteUnsecure = `http://35.196.218.231:8080` as const
 export const serverRouteSecure = `https://35.231.162.91:8080` as const
 
-
 async function get<T>(endpoint: string, query: string = ''): Promise<T> {
   const url = endpoint + (query ? `?${query}` : '')
   const response = await axios.get(`${serverRouteSecure}/${url}`)
