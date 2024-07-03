@@ -76855,7 +76855,10 @@ function ReviewOrder() {
       Q4.Group,
       {
         className: "reviewFiles__checkboxGroup",
-        options: fileOrder.map((fileName) => ({ label: fileName, value: fileName }))
+        options: fileOrder.map((fileName) => {
+          const pieces = fileName.split("b/");
+          return { label: pieces[pieces.length - 1], value: fileName };
+        })
       }
     ) })
   ] }) }) });
