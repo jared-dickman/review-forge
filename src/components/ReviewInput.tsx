@@ -5,6 +5,7 @@ import {AssistApi} from 'src/api/AssistApi'
 import {ReviewApi} from 'src/api/ReviewApi.ts'
 import {LocalStorageKeys} from 'src/constants/LocalStorageKeys.ts'
 import {useLocalStorage} from 'src/hooks/useLocalStorage.tsx'
+import {useAppStateStore} from 'src/stores/AppStateStore.ts'
 import {useCommentsStore} from 'src/stores/CommentsStore.ts'
 import {useReviewStore} from 'src/stores/ReviewStore.ts'
 
@@ -23,8 +24,9 @@ export function ReviewInput() {
 
   const [inputType, setInputType] = useLocalStorage<ReviewInputType>(LocalStorageKeys.reviewInputType, 'pr')
 
-  const { link: reviewLink, setLink: setReviewLink, setDiff } = useReviewStore()
   const { setAiComments } = useCommentsStore()
+  const { link: reviewLink, setLink: setReviewLink, setDiff } = useReviewStore()
+  const { setIsLoading } = useAppStateStore()
 
   let reviewInputLabel: string
   switch (inputType) {
@@ -95,14 +97,14 @@ export function ReviewInput() {
 
   async function fetchReview(): Promise<void> {
     try {
+      setIsLoading(true)
       const diff = await ReviewApi.getDiff(reviewLink)
       const aiComments = await AssistApi.getAiComments(reviewLink)
       setDiff(diff)
       setAiComments(aiComments)
+      setIsLoading(false)
     } catch (e) {
-
-    } finally {
-
+      console.log(e)
     }
   }
 
