@@ -74381,7 +74381,8 @@ function CommentTrigger({ change, onClick }) {
 }
 const LocalStorageKeys = {
   diffViewType: "diffViewType",
-  diffGutterType: "diffGutterType"
+  diffGutterType: "diffGutterType",
+  reviewInputType: "reviewInputType"
 };
 const urlAlphabet = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
 let nanoid = (size = 21) => {
@@ -74617,7 +74618,7 @@ const useCommentsStore = create$1((set2) => ({
   setAiComments: (aiComments) => set2({ aiComments })
 }));
 const useReviewStore = create$1((set2) => ({
-  link: "",
+  link: "https://github.com/mParticle/aquarium/pull/261",
   setLink: (link2) => set2({ link: link2 }),
   diff: "",
   setDiff: (diff) => set2({ diff }),
@@ -74653,10 +74654,6 @@ function ReviewDiff() {
   const renderGutter = reactExports.useCallback(
     generateRenderGutter,
     [addComment, viewType]
-  );
-  reactExports.useMemo(
-    () => generateDiffWidgets(),
-    [comments, saveEdit, editComment, cancelEdit, deleteComment]
   );
   reactExports.useEffect(() => {
     addAiComments();
@@ -74736,7 +74733,6 @@ function ReviewDiff() {
     const commentLines = changes.filter(({ content: content2 }) => {
       return commentsPerLine[content2.trim()] !== void 0;
     });
-    console.log({ commentsPerLine, changes, commentLines, file });
     return commentLines.reduce(
       (widgets, change) => {
         const changeKey = getChangeKey(change);
@@ -74764,8 +74760,6 @@ function ReviewDiff() {
     if (canComment) return /* @__PURE__ */ jsxRuntimeExports.jsx(CommentTrigger, { change, onClick: addComment });
     return wrapInAnchor(renderDefault());
   }
-  function generateDiffWidgets(files2) {
-  }
   async function addAiComments(link22) {
     if (!diff) return;
     aiComments.files.forEach((file) => {
@@ -74791,6 +74785,8 @@ function ReviewDiff() {
     return fileOrder.findIndex((diffFile) => diffFile.includes(a3.newPath)) - fileOrder.findIndex((diffFile) => diffFile.includes(b2.newPath));
   }
 }
+const MpBrandSecondary3 = "#eceae9";
+const Margin = "16px";
 function bind(fn, thisArg) {
   return function wrap2() {
     return fn.apply(thisArg, arguments);
@@ -77088,10 +77084,10 @@ const BaseApi = {
   get,
   post
 };
-const serverRoute = `https://35.231.162.91:8080`;
+const serverRouteSecure = `https://35.231.162.91:8080`;
 async function get(endpoint, query = "") {
   const url2 = endpoint + (query ? `?${query}` : "");
-  const response = await axios.get(`${serverRoute}/${url2}`);
+  const response = await axios.get(`${serverRouteSecure}/${url2}`);
   if (response.status === 200) {
     return response.data;
   } else {
@@ -77100,7 +77096,7 @@ async function get(endpoint, query = "") {
 }
 async function post(endpoint, query = "", body = {}) {
   const url2 = endpoint + (query ? `?${query}` : "");
-  const response = await axios.post(`${serverRoute}/${url2}`, body);
+  const response = await axios.post(`${serverRouteSecure}/${url2}`, body);
   if (response.status === 200) {
     return response.data;
   } else {
@@ -77109,12 +77105,19 @@ async function post(endpoint, query = "", body = {}) {
 }
 const AssistApi = {
   getInsight,
-  getAiComments
+  getAiComments,
+  getCustomInsight
 };
 async function getInsight(reviewLink, insightId) {
   const endpoint = `analyze/${insightId}`;
   const query = `url=${reviewLink}`;
   return BaseApi.get(endpoint, query);
+}
+async function getCustomInsight(reviewLink, prompt) {
+  const body = { prompt };
+  const endpoint = `custom`;
+  const query = `url=${reviewLink}`;
+  return BaseApi.post(endpoint, query, body);
 }
 async function getAiComments(reviewLink) {
   const endpoint = "comments";
@@ -77129,32 +77132,64 @@ async function getDiff(reviewLink) {
   const query = `url=${reviewLink}`;
   return BaseApi.get(endpoint, query);
 }
+const ReviewInputOptions = [
+  { label: "PR", value: "pr" },
+  { label: "Diff", value: "diff" },
+  { label: "Code", value: "code" }
+];
 function ReviewInput() {
   const [isFetching, setIsFetching] = reactExports.useState();
   const [isInputError, setIsInputError] = reactExports.useState();
   const [isFetchingError, setIsFetchingError] = reactExports.useState();
+  const [inputType, setInputType] = useLocalStorage(LocalStorageKeys.reviewInputType, "pr");
   const { link: reviewLink, setLink: setReviewLink, setDiff } = useReviewStore();
   const { setAiComments } = useCommentsStore();
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "reviewInput__wrapper", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "reviewInput__label", children: "Enter a pull request url to review" }),
+  let reviewInputLabel;
+  switch (inputType) {
+    case "pr":
+      reviewInputLabel = "Enter a pull request url to review";
+      break;
+    case "diff":
+      reviewInputLabel = "Enter a diff to review";
+      break;
+    case "code":
+      reviewInputLabel = "Enter code to review";
+      break;
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(e1, { vertical: true, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
-      z.Search,
+      k2.Group,
       {
-        className: "reviewInput__input",
-        size: "large",
-        autoFocus: true,
-        enterButton: "Forge Review",
-        placeholder: "say this is a test",
-        value: reviewLink,
-        loading: isFetching,
-        status: isInputError ? "error" : void 0,
-        onChange,
-        onSearch: submit
+        options: ReviewInputOptions,
+        style: { marginBottom: Margin },
+        value: inputType,
+        optionType: "button",
+        onChange: (e5) => {
+          changeInputType(e5.target.value);
+        }
       }
     ),
-    isFetchingError && /* @__PURE__ */ jsxRuntimeExports.jsx(j.Text, { type: "danger", children: "Error fetching review" })
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "reviewInput__wrapper", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "reviewInput__label", children: reviewInputLabel }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        z.Search,
+        {
+          className: "reviewInput__input",
+          size: "large",
+          autoFocus: true,
+          enterButton: "Forge Review",
+          placeholder: "say this is a test",
+          value: reviewLink,
+          loading: isFetching,
+          status: isInputError ? "error" : void 0,
+          onChange: onInputChange,
+          onSearch: submit
+        }
+      ),
+      isFetchingError && /* @__PURE__ */ jsxRuntimeExports.jsx(j.Text, { type: "danger", children: "Error fetching review" })
+    ] })
   ] }) });
-  function onChange(e5) {
+  function onInputChange(e5) {
     setReviewLink(e5.target.value);
     setIsInputError(false);
   }
@@ -77185,6 +77220,10 @@ function ReviewInput() {
     } finally {
     }
   }
+  function changeInputType(type4) {
+    setInputType(type4);
+    localStorage.setItem(LocalStorageKeys.reviewInputType, type4);
+  }
 }
 function ReviewOrder() {
   const { fileOrder, diff, fileOrderReason, setFileOrder, setFileOrderReason } = useReviewStore();
@@ -77207,7 +77246,6 @@ function ReviewOrder() {
     setFileOrderReason(aiComments.orderingReason);
   }
 }
-const MpBrandSecondary3 = "#eceae9";
 function ok$1() {
 }
 function unreachable() {
@@ -86739,6 +86777,10 @@ const InsightTypes = [
   {
     id: "security",
     display: "Security"
+  },
+  {
+    id: "custom",
+    display: "Custom"
   }
 ];
 function ReviewInsights() {
@@ -86756,6 +86798,8 @@ function ReviewInsights() {
       const [isInsightLoading, setIsInsightLoading] = reactExports.useState(false);
       const [isInsightError, setIsInsightError] = reactExports.useState(false);
       const [aiInsight, setAiInsight] = reactExports.useState();
+      const [customPrompt, setCustomPrompt] = reactExports.useState();
+      const isCustomReview = insight.id === "custom";
       return {
         key: insight.id,
         className: "reviewInsights__item",
@@ -86793,10 +86837,22 @@ function ReviewInsights() {
             }
           );
         }
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(Markdown, { children: aiInsight });
+        return isCustomReview && !aiInsight ? /* @__PURE__ */ jsxRuntimeExports.jsx(CustomReviewInsight, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(Markdown, { children: aiInsight });
+      }
+      function CustomReviewInsight() {
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(g3, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(z, { value: customPrompt, onEnterPress: submit, onChange: (e5) => setCustomPrompt(e5.target.value), autoFocus: true }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(W, { onClick: submit, loading: isInsightLoading, children: "Submit" })
+        ] }) });
+        async function submit() {
+          setIsInsightLoading(true);
+          setAiInsight(await AssistApi.getCustomInsight(link2, customPrompt ?? ""));
+          setIsInsightLoading(false);
+        }
       }
       async function loadInsight() {
         if (aiInsight) return;
+        if (isCustomReview) return;
         setIsInsightLoading(true);
         setIsInsightError(false);
         try {
