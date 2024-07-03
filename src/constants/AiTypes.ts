@@ -9,6 +9,10 @@ export const AiTypes = [
   },
   {
     key: '3',
+    label: 'Blended',
+  },
+  {
+    key: '4',
     label: 'The Other Guys',
     disabled: true,
   }
