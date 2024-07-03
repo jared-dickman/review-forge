@@ -24,20 +24,20 @@ export const AppContent = () => {
 
         {diff &&
          <span className="reviewDiff__diffControls">
-          <Button onClick={e => setIsShowingDiff(!isShowingDiff)}>
-            <Typography.Text>{isShowingDiff ? 'Hide' : 'View'} Diff</Typography.Text>
-          </Button>
+           <Button onClick={e => setIsShowingDiff(!isShowingDiff)}>
+             <Typography.Text>{isShowingDiff ? 'Hide' : 'View'} Diff</Typography.Text>
+           </Button>
 
-          <Button onClick={e => setIsShowingOrder(!isShowingOrder)}>
-            <Typography.Text>{isShowingOrder ? 'Hide' : 'View'} File Order</Typography.Text>
-          </Button>
+           <Button onClick={e => setIsShowingOrder(!isShowingOrder)}>
+             <Typography.Text>{isShowingOrder ? 'Hide' : 'View'} File Order</Typography.Text>
+           </Button>
 
-          <Button onClick={e => setIsShowingInsights(!isShowingInsights)}>
-            <Typography.Text>{isShowingInsights ? 'Hide' : 'View'} Prediction Insights</Typography.Text>
-          </Button>
+           <Button onClick={e => setIsShowingInsights(!isShowingInsights)}>
+             <Typography.Text>{isShowingInsights ? 'Hide' : 'View'} Prediction Insights</Typography.Text>
+           </Button>
 
-          <Dropdown menu={{ items: AiTypes }}><Button>Change Model</Button></Dropdown>
-        </span>}
+           <Dropdown menu={{ items: AiTypes }}><Button>Change Model</Button></Dropdown>
+         </span>}
 
         {isShowingDiff && <ReviewDiff/>}
         {isShowingOrder && <ReviewOrder/>}

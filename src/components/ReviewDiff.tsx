@@ -8,7 +8,7 @@ import {useLocalStorage} from 'src/hooks/useLocalStorage.tsx'
 import {AssistedCommentsResponse} from 'src/interfaces/AssistedCommentsResponse'
 import {useCommentsStore} from 'src/stores/CommentsStore.ts'
 import {useReviewStore} from 'src/stores/ReviewStore.ts'
-import { DiffAiComment } from './Diff/DiffAiComment'
+import {DiffAiComment} from './Diff/DiffAiComment'
 
 export function ReviewDiff() {
   const { link, diff } = useReviewStore()
@@ -31,10 +31,6 @@ export function ReviewDiff() {
 
   const renderGutter = useCallback(generateRenderGutter,
                                    [addComment, viewType])
-
-  const diffWidgets = useMemo(() => generateDiffWidgets(files),
-                              [comments, saveEdit, editComment, cancelEdit, deleteComment])
-
 
   useEffect(() => { addAiComments(link) }, [diff])
 
@@ -90,31 +86,28 @@ export function ReviewDiff() {
   }
 
   function getWidgets(file: FileData) {
-    const comments = (aiComments as AssistedCommentsResponse).files.find(prFile => prFile.diffFile.includes(file.newPath))?.comments ?? [];
+    const comments = (aiComments as AssistedCommentsResponse).files.find(prFile => prFile.diffFile.includes(file.newPath))?.comments ?? []
     const commentsPerLine = comments.reduce((previous, currentComment) => {
       return {
         ...previous,
         [currentComment.lineContent.trim()]: currentComment.comment
       }
-    }, {});
+    }, {})
 
-    const changes = file.hunks.reduce((result, {changes}) => [...result, ...changes], []);
+    const changes = file.hunks.reduce((result, { changes }) => [...result, ...changes], [])
     const commentLines = changes.filter(({ content }) => {
       return commentsPerLine[content.trim()] !== undefined
-    });
-    
-    console.log({ commentsPerLine, changes, commentLines, file });
-    return commentLines.reduce(
-        (widgets, change) => {
-            const changeKey = getChangeKey(change);
+    })
 
-            return {
-                ...widgets,
-                [changeKey]: <DiffAiComment message={commentsPerLine[change.content.trim()]} />,
-            };
-        },
-        {}
-    );
+    return commentLines.reduce(
+      (widgets, change) => {
+        const changeKey = getChangeKey(change)
+
+        return {
+          ...widgets,
+          [changeKey]: <DiffAiComment message={commentsPerLine[change.content.trim()]}/>,
+        }
+      }, {})
   }
 
   function generateAnchorID(change): string {
@@ -139,9 +132,6 @@ export function ReviewDiff() {
     return wrapInAnchor(renderDefault())
   }
 
-  function generateDiffWidgets(files: FileData[]) {
-
-  }
 
   async function addAiComments(link: string): Promise<void> {
     if (!diff) return

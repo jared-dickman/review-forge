@@ -1,4 +1,4 @@
-import {Button, Center, Collapse, ICollapseProps, Result, Skeleton, Typography} from '@mparticle/aquarium'
+import {Input, Button, Center, Collapse, ICollapseProps, Result, Skeleton, Typography, Space} from '@mparticle/aquarium'
 import {MpBrandSecondary3} from '@mparticle/aquarium/dist/style.ts'
 import {useState} from 'react'
 import Markdown from 'react-markdown'
@@ -23,6 +23,8 @@ export function ReviewInsights() {
       const [isInsightLoading, setIsInsightLoading] = useState<boolean>(false)
       const [isInsightError, setIsInsightError] = useState<boolean>(false)
       const [aiInsight, setAiInsight] = useState<string>()
+      const [customPrompt, setCustomPrompt] = useState<string>()
+      const isCustomReview = insight.id === 'custom'
 
       return {
         key: insight.id,
@@ -52,11 +54,29 @@ export function ReviewInsights() {
                          extra={<Button onClick={e => { loadInsight() }}>Reload {insight.display} insights</Button>}/>
         }
 
-        return <Markdown>{aiInsight}</Markdown>
+        return isCustomReview && !aiInsight ?
+               <CustomReviewInsight/> :
+               <Markdown>{aiInsight}</Markdown>
+      }
+
+      function CustomReviewInsight() {
+        return <>
+          <Space>
+            <Input value={customPrompt}onEnterPress={submit} onChange={e => setCustomPrompt(e.target.value)} autoFocus/>
+            <Button onClick={submit} loading={isInsightLoading}>Submit</Button>
+          </Space>
+        </>
+
+        async function submit(): Promise<void> {
+          setIsInsightLoading(true)
+          setAiInsight(await AssistApi.getCustomInsight(link, customPrompt ?? ''))
+          setIsInsightLoading(false)
+        }
       }
 
       async function loadInsight(): Promise<void> {
         if (aiInsight) return
+        if (isCustomReview) return
 
         setIsInsightLoading(true)
         setIsInsightError(false)

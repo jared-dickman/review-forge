@@ -24,4 +24,8 @@ export const InsightTypes: Insight[] = [
     id: 'security',
     display: 'Security'
   },
+  {
+    id: 'custom',
+    display: 'Custom'
+  },
 ] as const
