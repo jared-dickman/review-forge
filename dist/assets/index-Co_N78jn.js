@@ -9329,10 +9329,10 @@ const BaseApi = {
   get: get$1,
   post
 };
-const serverRouteUnsecure = `http://35.196.218.231:8080`;
+const serverRouteSecure = `https://35.231.162.91:8080`;
 async function get$1(endpoint, query = "") {
   const url2 = endpoint + (query ? `?${query}` : "");
-  const response = await axios.get(`${serverRouteUnsecure}/${url2}`);
+  const response = await axios.get(`${serverRouteSecure}/${url2}`);
   if (response.status === 200) {
     return response.data;
   } else {
@@ -9341,7 +9341,7 @@ async function get$1(endpoint, query = "") {
 }
 async function post(endpoint, query = "", body = {}) {
   const url2 = endpoint + (query ? `?${query}` : "");
-  const response = await axios.post(`${serverRouteUnsecure}/${url2}`, body);
+  const response = await axios.post(`${serverRouteSecure}/${url2}`, body);
   if (response.status === 200) {
     return response.data;
   } else {
