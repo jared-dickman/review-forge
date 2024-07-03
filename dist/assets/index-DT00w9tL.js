@@ -74435,7 +74435,7 @@ function useLocalStorage(key, defaultValue) {
   const [value, setValue] = reactExports.useState(localStorage.getItem(key) || defaultValue);
   return [value, setValue];
 }
-var define_import_meta_env_default$1 = { BASE_URL: "/", MODE: "production", DEV: false, PROD: true, SSR: false };
+var define_import_meta_env_default$1 = { BASE_URL: "/review-forge/", MODE: "production", DEV: false, PROD: true, SSR: false };
 const createStoreImpl = (createState2) => {
   let state;
   const listeners = /* @__PURE__ */ new Set();
@@ -74578,7 +74578,7 @@ withSelector_production_min.useSyncExternalStoreWithSelector = function(a3, b2, 
 }
 var withSelectorExports = withSelector.exports;
 const useSyncExternalStoreExports = /* @__PURE__ */ getDefaultExportFromCjs(withSelectorExports);
-var define_import_meta_env_default = { BASE_URL: "/", MODE: "production", DEV: false, PROD: true, SSR: false };
+var define_import_meta_env_default = { BASE_URL: "/review-forge/", MODE: "production", DEV: false, PROD: true, SSR: false };
 const { useDebugValue } = ReactExports;
 const { useSyncExternalStoreWithSelector } = useSyncExternalStoreExports;
 let didWarnAboutEqualityFn = false;
@@ -77088,7 +77088,7 @@ const BaseApi = {
   get,
   post
 };
-const serverRoute = `http://34.138.3.116:8080`;
+const serverRoute = `https://35.231.162.91:8080`;
 async function get(endpoint, query = "") {
   const url2 = endpoint + (query ? `?${query}` : "");
   const response = await axios.get(`${serverRoute}/${url2}`);
