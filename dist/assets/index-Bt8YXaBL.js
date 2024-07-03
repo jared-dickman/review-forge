@@ -76746,6 +76746,10 @@ function ReviewDiff() {
 }
 const MpBrandSecondary3 = "#eceae9";
 const Margin = "16px";
+const useAppStateStore = create$1((set2) => ({
+  isLoading: "",
+  setIsLoading: (isLoading) => set2({ isLoading })
+}));
 const ReviewInputOptions = [
   { label: "PR", value: "pr" },
   { label: "Diff", value: "diff" },
@@ -76756,8 +76760,9 @@ function ReviewInput() {
   const [isInputError, setIsInputError] = reactExports.useState();
   const [isFetchingError, setIsFetchingError] = reactExports.useState();
   const [inputType, setInputType] = useLocalStorage(LocalStorageKeys.reviewInputType, "pr");
-  const { link: reviewLink, setLink: setReviewLink, setDiff } = useReviewStore();
   const { setAiComments } = useCommentsStore();
+  const { link: reviewLink, setLink: setReviewLink, setDiff } = useReviewStore();
+  const { setIsLoading } = useAppStateStore();
   let reviewInputLabel;
   switch (inputType) {
     case "pr":
@@ -76825,12 +76830,14 @@ function ReviewInput() {
   }
   async function fetchReview() {
     try {
+      setIsLoading(true);
       const diff = await ReviewApi.getDiff(reviewLink);
       const aiComments = await AssistApi.getAiComments(reviewLink);
       setDiff(diff);
       setAiComments(aiComments);
+      setIsLoading(false);
     } catch (e5) {
-    } finally {
+      console.log(e5);
     }
   }
   function changeInputType(type4) {
@@ -86491,14 +86498,14 @@ const AiTypes = [
   },
   {
     key: "3",
+    label: "Blended"
+  },
+  {
+    key: "4",
     label: "The Other Guys",
     disabled: true
   }
 ];
-const useAppStateStore = create$1((set2) => ({
-  isLoading: "",
-  setIsLoading: (isLoading) => set2({ isLoading })
-}));
 const AppContent = () => {
   const { isLoading } = useAppStateStore();
   const {
