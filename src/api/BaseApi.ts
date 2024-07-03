@@ -6,7 +6,7 @@ export const BaseApi = {
 } as const
 
 // export const localServerRoute = `http://localhost:5678` as const
-export const serverRoute = `http://34.138.3.116:8080` as const
+export const serverRoute = `http://35.196.218.231:8080` as const
 
 async function get<T>(endpoint: string, query: string = ''): Promise<T> {
   const url = endpoint + (query ? `?${query}` : '')
