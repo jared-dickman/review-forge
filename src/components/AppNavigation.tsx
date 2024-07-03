@@ -1,9 +1,10 @@
 import {GlobalNavigation, Icon, IGlobalNavigationItem, IGlobalNavigationLogo} from '@mparticle/aquarium'
+import {AppName} from 'src/components/App.tsx'
 
 export const AppNavigation = () => {
 
   const logo = {
-    label: 'Review Forge',
+    label: AppName,
     icon: <Icon name="alicorn" size="xxl"/>,
     onSuiteLogoClick: goHome,
   } as IGlobalNavigationLogo

@@ -97,7 +97,6 @@ export function ReviewInput() {
     try {
       const diff = await ReviewApi.getDiff(reviewLink)
       const aiComments = await AssistApi.getAiComments(reviewLink)
-      console.log({ diff, aiComments })
       setDiff(diff)
       setAiComments(aiComments)
     } catch (e) {

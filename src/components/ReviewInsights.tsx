@@ -62,7 +62,7 @@ export function ReviewInsights() {
       function CustomReviewInsight() {
         return <>
           <Space>
-            <Input value={customPrompt}onEnterPress={submit} onChange={e => setCustomPrompt(e.target.value)} autoFocus/>
+            <Input value={customPrompt} onPressEnter={submit} onChange={e => setCustomPrompt(e.target.value)} autoFocus/>
             <Button onClick={submit} loading={isInsightLoading}>Submit</Button>
           </Space>
         </>
