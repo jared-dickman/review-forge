@@ -7,6 +7,7 @@ export interface AssistedCommentsResponse {
     diffFile: string;
     comments: Array<{
       lineContent: string;
+      lineNumber: number;
       comment: string;
     }>
   }>;
