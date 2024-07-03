@@ -74618,7 +74618,7 @@ const useCommentsStore = create$1((set2) => ({
   setAiComments: (aiComments) => set2({ aiComments })
 }));
 const useReviewStore = create$1((set2) => ({
-  link: "https://github.com/mParticle/aquarium/pull/261",
+  link: "",
   setLink: (link2) => set2({ link: link2 }),
   diff: "",
   setDiff: (diff) => set2({ diff }),
@@ -77084,10 +77084,10 @@ const BaseApi = {
   get,
   post
 };
-const serverRouteSecure = `https://35.231.162.91:8080`;
+const serverRouteUnsecure = `http://35.196.218.231:8080`;
 async function get(endpoint, query = "") {
   const url2 = endpoint + (query ? `?${query}` : "");
-  const response = await axios.get(`${serverRouteSecure}/${url2}`);
+  const response = await axios.get(`${serverRouteUnsecure}/${url2}`);
   if (response.status === 200) {
     return response.data;
   } else {
@@ -77096,7 +77096,7 @@ async function get(endpoint, query = "") {
 }
 async function post(endpoint, query = "", body = {}) {
   const url2 = endpoint + (query ? `?${query}` : "");
-  const response = await axios.post(`${serverRouteSecure}/${url2}`, body);
+  const response = await axios.post(`${serverRouteUnsecure}/${url2}`, body);
   if (response.status === 200) {
     return response.data;
   } else {
@@ -86957,6 +86957,12 @@ const AppNavigation = () => {
   }
 };
 function App() {
+  const { setLink } = useReviewStore();
+  reactExports.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const prUrl = urlParams.get("prUrl");
+    if (prUrl) setLink(prUrl);
+  }, []);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(AppNavigation, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsx(AppContent, {})
