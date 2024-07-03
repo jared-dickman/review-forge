@@ -1,4 +1,4 @@
-import {Alert} from '@mparticle/aquarium'
+import {Card} from '@mparticle/aquarium'
 
 interface AiCommentProps {
   message: string
@@ -6,6 +6,8 @@ interface AiCommentProps {
 
 export function DiffAiComment(props: AiCommentProps) {
   return <>
-    <Alert banner type="info" message={props.message} showIcon={false}/>
+    <Card size="small" title={<span>AI Comment</span>} type="inner" style={{ margin: 8 }}>
+      <p>{props.message}</p>
+    </Card>
   </>
 }
