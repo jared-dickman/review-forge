@@ -15,10 +15,10 @@ Turning code review into developer joy
   - open a terminal running node 20+
   - `npm i && npm run dev`
 
-- Start the Backend
-  - open a terminal running node 20+
-  - `cd src/server && npm i && npx tsc && node dist/app.js`
- 
+~~- Start the Backend
+     - open a terminal running node 20+
+     - `cd src/served && npm i && npx tsc && node dist/app.js`~~
+
 
 ## Screenshots
 
